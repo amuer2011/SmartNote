@@ -8,12 +8,13 @@
 
 让记录、检索、关联和行动，在同一个工作区里自然衔接。
 
-![版本](https://img.shields.io/badge/version-0.12.18-7965c1)
+[![Windows build](https://github.com/amuer2011/SmartNote/actions/workflows/windows.yml/badge.svg)](https://github.com/amuer2011/SmartNote/actions/workflows/windows.yml)
+![版本](https://img.shields.io/badge/version-1.0.0-7965c1)
 ![平台](https://img.shields.io/badge/platform-Windows%2010%20%2F%2011%20x64-0078D4)
 ![技术栈](https://img.shields.io/badge/stack-Go%20%2B%20Vue%203-42b883)
 ![离线模型](https://img.shields.io/badge/embedding-built--in%20%26%20offline-6554a4)
 
-[功能特点](#功能特点) · [界面预览](#界面预览) · [开始使用](#开始使用) · [源码构建](#源码构建) · [项目文档](#项目文档)
+[下载安装](https://github.com/amuer2011/SmartNote/releases/latest) · [功能特点](#功能特点) · [界面预览](#界面预览) · [开始使用](#开始使用) · [源码构建](#源码构建) · [项目文档](#项目文档)
 
 </div>
 
@@ -92,7 +93,9 @@ SmartNote 是一款面向个人长期知识积累的桌面笔记应用。笔记�
 
 **已验证环境：Windows 10 / 11 x64，需要 Microsoft Edge WebView2 Runtime。**
 
-当前仓库提供源码与构建脚本，生成的 EXE 和安装包不随源码提交。按下方步骤构建后：
+从 [GitHub Releases](https://github.com/amuer2011/SmartNote/releases/latest) 下载 `SmartNote-Setup-v1.0.0-windows-x64.exe` 安装包，或 `SmartNote-v1.0.0-windows-x64.exe` 免安装版。发布包包含离线模型；同页 `SHA256SUMS.txt` 可用于校验下载文件。也可以按下方步骤自行构建。
+
+安装或构建完成后：
 
 1. 运行 `build/bin/SmartNote.exe`，或使用构建生成的安装包安装。
 2. 打开一个有读写权限的本地目录作为工作区，也可从右上角导入已有笔记文件夹。
@@ -186,7 +189,8 @@ SmartNote/
 
 ## 项目文档
 
-- [当前版本 v0.12.18](docs/release-v0.12.18.md)：复制与粘贴、代码围栏、暗色光标和右侧页签恢复。
+- [当前版本 v1.0.0](docs/release-v1.0.0.md)：首个正式版本，包含 Windows 安装包、免安装版及自动构建发布。
+- [Actions 与发布说明](docs/releasing.md)：持续集成、版本标签、构建产物与 Release 发布方式。
 - [功能实施状态](docs/implementation-status.md)：已落地能力和后续事项。
 - [WebDAV 与大模型配置](docs/sync-and-llm.md)：同步范围、冲突处理、供应商和模型配置。
 - [AI 知识助手指南](docs/assistant-knowledge-guide.md)：工作区上下文、工具与交互边界。

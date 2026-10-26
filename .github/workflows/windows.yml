@@ -1,0 +1,140 @@
+name: Windows build and release
+
+on:
+  push:
+    branches: [main]
+    tags: ['v[0-9]*']
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: windows-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ !startsWith(github.ref, 'refs/tags/') }}
+
+jobs:
+  build:
+    name: Build and test Windows x64
+    runs-on: windows-2022
+    timeout-minutes: 45
+    env:
+      CGO_ENABLED: '1'
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Prepare Windows compiler
+        shell: pwsh
+        run: |
+          $compilerDirectory = 'C:\mingw64\bin'
+          if (-not (Test-Path "$compilerDirectory\gcc.exe")) {
+            throw 'The Windows runner is missing the MinGW-w64 compiler.'
+          }
+          $compilerDirectory | Out-File -FilePath $env:GITHUB_PATH -Append -Encoding utf8
+          "CC=$compilerDirectory\gcc.exe" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+          "CXX=$compilerDirectory\g++.exe" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+          & "$compilerDirectory\gcc.exe" --version
+          if ($LASTEXITCODE -ne 0) { throw 'Compiler check failed.' }
+
+      - name: Check version and tag
+        id: version
+        shell: pwsh
+        run: |
+          $version = (Get-Content frontend/package.json -Raw | ConvertFrom-Json).version
+          if ($version -notmatch '^\d+\.\d+\.\d+$') { throw 'Invalid package version.' }
+          if ($env:GITHUB_REF_TYPE -eq 'tag' -and $env:GITHUB_REF_NAME -ne "v$version") {
+            throw "Tag $env:GITHUB_REF_NAME does not match package version v$version."
+          }
+          if (-not (Test-Path "docs/release-v$version.md")) { throw 'Release notes are missing.' }
+          "version=$version" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+
+      - name: Build application and installer
+        shell: pwsh
+        run: |
+          $version = '${{ steps.version.outputs.version }}'
+          .\build.ps1 -Installer -Version $version `
+            -Output "build/bin/SmartNote-v$version-windows-x64.exe" `
+            -ReleaseStagingDirectory (Join-Path $env:RUNNER_TEMP 'SmartNote-build')
+
+      - name: Verify isolated installation and offline model
+        shell: pwsh
+        run: |
+          $version = '${{ steps.version.outputs.version }}'
+          .\build\Test-Installer.ps1 `
+            -Installer "build/bin/SmartNote-Setup-v$version-windows-x64.exe" `
+            -Binary "build/bin/SmartNote-v$version-windows-x64.exe" `
+            -StageRoot (Join-Path $env:RUNNER_TEMP 'SmartNote-installer-tests')
+
+      - name: Generate SHA-256 checksums
+        shell: pwsh
+        run: |
+          $checksums = Get-ChildItem build/bin/*.exe | Sort-Object Name | ForEach-Object {
+            $hash = (Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256).Hash.ToLowerInvariant()
+            "$hash  $($_.Name)"
+          }
+          if ($checksums.Count -ne 2) { throw 'Expected application and installer.' }
+          $checksums | Set-Content build/bin/SHA256SUMS.txt -Encoding ascii
+
+      - name: Upload Windows package
+        uses: actions/upload-artifact@v4
+        with:
+          name: SmartNote-v${{ steps.version.outputs.version }}-windows-x64
+          path: |
+            build/bin/SmartNote-*.exe
+            build/bin/SHA256SUMS.txt
+          if-no-files-found: error
+          retention-days: 14
+
+  release:
+    name: Publish GitHub Release
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: SmartNote-*-windows-x64
+          path: release-assets
+          merge-multiple: true
+
+      - name: Publish validated binaries and release notes
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_TAG: ${{ github.ref_name }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          version="${RELEASE_TAG#v}"
+          cd release-assets
+          sha256sum --check SHA256SUMS.txt
+          cd ..
+          if gh release view "$RELEASE_TAG" --json isDraft > release-state.json 2>/dev/null; then
+            if ! jq -e '.isDraft == true' release-state.json >/dev/null; then
+              echo 'This release is already published; its assets will not be overwritten.'
+              exit 1
+            fi
+          else
+            gh release create "$RELEASE_TAG" --verify-tag --draft \
+              --title "SmartNote $RELEASE_TAG" --notes-file "docs/release-v$version.md"
+          fi
+          gh release upload "$RELEASE_TAG" release-assets/*.exe release-assets/SHA256SUMS.txt --clobber
+          gh release edit "$RELEASE_TAG" --draft=false --latest

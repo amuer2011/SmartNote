@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { version as appVersion } from '../package.json'
 
 import { warmCalendar } from './services/calendar-cache'
 
@@ -1540,7 +1541,7 @@ onBeforeUnmount(() => { appDisposed=true;clearTimeout(externalTimer);unlisten?.(
 
   <aside class="sidebar">
 
-   <div class="brand"><span class="brand-mark"><BookOpen :size="21" /></span><strong>SmartNote<span class="brand-dot">.</span></strong><span class="version">BETA</span></div>
+   <div class="brand"><span class="brand-mark"><BookOpen :size="21" /></span><strong>SmartNote<span class="brand-dot">.</span></strong><span class="version">v{{ appVersion }}</span></div>
 
    <WorkspacePicker :workspaces="store.data.settings.workspaces" :current-id="store.workspace?.id" :disabled="busy||store.switching" @select="switchWorkspace" @create="addWorkspace" @rename="rename=store.workspace?.name||'';modal='rename'" @remove="modal='remove'"/>
 
@@ -1691,7 +1692,7 @@ onBeforeUnmount(() => { appDisposed=true;clearTimeout(externalTimer);unlisten?.(
     <template v-else-if="settingsTab === 'sync'"><h1>WebDAV 多设备同步</h1><SyncSettings :key="store.workspace?.id" :workspace-id="store.workspace?.id || ''" @changed="requestWorkspaceCheck"/></template>
     <template v-else-if="settingsTab === 'llm'"><h1>大模型配置</h1><LLMSettings @saved="llmSettingsRevision++"/></template>
 
-    <template v-else><div class="about-brand"><span class="brand-mark"><BookOpen :size="28" /></span><h1>SmartNote<span class="brand-dot">.</span></h1></div><p>让每一个想法，都有归处。</p><span class="status-pill">v0.12.18 · 粘贴与编辑体验</span><div class="setting-row"><div><strong>技术栈</strong><p>Wails · Go · Vue 3 · TypeScript · SQLite</p></div></div><div class="setting-row"><div><strong>数据位置</strong><p>笔记保存在工作区；设置、附件和索引位于：{{ actualDataDirectory || '桌面启动后显示实际数据目录' }}</p></div></div><div class="info-box"><Leaf :size="20" /><p>记录方便、任务可追溯、数据可迁移。后续阶段的进度详见项目 README 和开发状态文档。</p></div></template>
+    <template v-else><div class="about-brand"><span class="brand-mark"><BookOpen :size="28" /></span><h1>SmartNote<span class="brand-dot">.</span></h1></div><p>让每一个想法，都有归处。</p><span class="status-pill">v{{ appVersion }} · 本地智能知识库</span><div class="setting-row"><div><strong>技术栈</strong><p>Wails · Go · Vue 3 · TypeScript · SQLite</p></div></div><div class="setting-row"><div><strong>数据位置</strong><p>笔记保存在工作区；设置、附件和索引位于：{{ actualDataDirectory || '桌面启动后显示实际数据目录' }}</p></div></div><div class="info-box"><Leaf :size="20" /><p>记录方便、任务可追溯、数据可迁移。后续阶段的进度详见项目 README 和开发状态文档。</p></div></template>
 
    <KeepAlive><SemanticSettings @saved="semanticConfigRevision++" @batch-applied="archiveBatchApplied" @batch-undone="archiveBatchUndone" v-if="settingsTab==='archive'" :workspace-id="store.workspace?.id || ''" :directories="folders"/></KeepAlive><KeepAlive><ArchiveRules v-if="settingsTab==='archive'" :workspace-id="store.workspace?.id || ''" :directories="folders"/></KeepAlive></div></section></FloatingWindow>
 

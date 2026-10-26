@@ -1,7 +1,10 @@
-﻿param([string]$Installer='build/bin/SmartNote-Setup-v0.9.1.exe',[string]$Binary='build/bin/SmartNote-v0.9.1.exe')
+﻿param(
+ [Parameter(Mandatory=$true)][string]$Installer,
+ [Parameter(Mandatory=$true)][string]$Binary,
+ [string]$StageRoot=(Join-Path ([IO.Path]::GetTempPath()) 'SmartNote-installer-tests')
+)
 $ErrorActionPreference='Stop'
-$stageRoot='D:\CHANG\SmartNote-release-stage'
-$testRoot=[IO.Path]::GetFullPath((Join-Path $stageRoot ('installer-v091-'+[guid]::NewGuid().ToString('N').Substring(0,8))))
+$testRoot=[IO.Path]::GetFullPath((Join-Path $stageRoot ('installer-'+[guid]::NewGuid().ToString('N').Substring(0,8))))
 if(-not $testRoot.StartsWith([IO.Path]::GetFullPath($stageRoot)+[IO.Path]::DirectorySeparatorChar,[StringComparison]::OrdinalIgnoreCase)){throw 'Invalid isolated test root'}
 $installDir=Join-Path $testRoot 'program'
 $diagnosticDir=Join-Path $testRoot 'diagnostic'
