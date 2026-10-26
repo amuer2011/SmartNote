@@ -27,3 +27,9 @@ SmartNoteData/
 .DS_Store
 Thumbs.db
 Desktop.ini
+
+# Native CPU libraries are prepared from pinned upstream archives during builds.
+internal/embedding/native/*
+!internal/embedding/native/README.md
+__pycache__/
+*.pyc

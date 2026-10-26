@@ -1,4 +1,4 @@
-//go:build windows && amd64 && cgo
+//go:build cgo && ((windows && amd64) || ((darwin || linux) && (amd64 || arm64)))
 
 package embedding
 

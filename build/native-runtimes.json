@@ -1,0 +1,47 @@
+{
+  "version": "1.22.0",
+  "platforms": {
+    "linux-amd64": {
+      "url": "https://github.com/microsoft/onnxruntime/releases/download/v1.22.0/onnxruntime-linux-x64-1.22.0.tgz",
+      "sha256": "8344d55f93d5bc5021ce342db50f62079daf39aaafb5d311a451846228be49b3",
+      "size": 7798730,
+      "files": {
+        "libonnxruntime.so": "onnxruntime-linux-x64-1.22.0/lib/libonnxruntime.so.1.22.0",
+        "libonnxruntime_providers_shared.so": "onnxruntime-linux-x64-1.22.0/lib/libonnxruntime_providers_shared.so",
+        "ORT-NATIVE-LICENSE": "onnxruntime-linux-x64-1.22.0/LICENSE",
+        "ORT-NATIVE-NOTICES.txt": "onnxruntime-linux-x64-1.22.0/ThirdPartyNotices.txt"
+      }
+    },
+    "linux-arm64": {
+      "url": "https://github.com/microsoft/onnxruntime/releases/download/v1.22.0/onnxruntime-linux-aarch64-1.22.0.tgz",
+      "sha256": "bb76395092d150b52c7092dc6b8f2fe4d80f0f3bf0416d2f269193e347e24702",
+      "size": 6849865,
+      "files": {
+        "libonnxruntime.so": "onnxruntime-linux-aarch64-1.22.0/lib/libonnxruntime.so.1.22.0",
+        "libonnxruntime_providers_shared.so": "onnxruntime-linux-aarch64-1.22.0/lib/libonnxruntime_providers_shared.so",
+        "ORT-NATIVE-LICENSE": "onnxruntime-linux-aarch64-1.22.0/LICENSE",
+        "ORT-NATIVE-NOTICES.txt": "onnxruntime-linux-aarch64-1.22.0/ThirdPartyNotices.txt"
+      }
+    },
+    "darwin-amd64": {
+      "url": "https://github.com/microsoft/onnxruntime/releases/download/v1.22.0/onnxruntime-osx-x86_64-1.22.0.tgz",
+      "sha256": "e4ec94a7696de74fb1b12846569aa94e499958af6ffa186022cfde16c9d617f0",
+      "size": 27889590,
+      "files": {
+        "libonnxruntime.dylib": "onnxruntime-osx-x86_64-1.22.0/lib/libonnxruntime.1.22.0.dylib",
+        "ORT-NATIVE-LICENSE": "onnxruntime-osx-x86_64-1.22.0/LICENSE",
+        "ORT-NATIVE-NOTICES.txt": "onnxruntime-osx-x86_64-1.22.0/ThirdPartyNotices.txt"
+      }
+    },
+    "darwin-arm64": {
+      "url": "https://github.com/microsoft/onnxruntime/releases/download/v1.22.0/onnxruntime-osx-arm64-1.22.0.tgz",
+      "sha256": "cab6dcbd77e7ec775390e7b73a8939d45fec3379b017c7cb74f5b204c1a1cc07",
+      "size": 25943843,
+      "files": {
+        "libonnxruntime.dylib": "onnxruntime-osx-arm64-1.22.0/lib/libonnxruntime.1.22.0.dylib",
+        "ORT-NATIVE-LICENSE": "onnxruntime-osx-arm64-1.22.0/LICENSE",
+        "ORT-NATIVE-NOTICES.txt": "onnxruntime-osx-arm64-1.22.0/ThirdPartyNotices.txt"
+      }
+    }
+  }
+}

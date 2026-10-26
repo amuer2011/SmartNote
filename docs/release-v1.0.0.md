@@ -1,4 +1,4 @@
-# SmartNote v1.0.0
+# v1.0.0
 
 SmartNote 首个正式版本：本地 Markdown 笔记、离线智能整理与个人知识库。
 

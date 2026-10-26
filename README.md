@@ -8,9 +8,9 @@
 
 让记录、检索、关联和行动，在同一个工作区里自然衔接。
 
-[![Windows build](https://github.com/amuer2011/SmartNote/actions/workflows/windows.yml/badge.svg)](https://github.com/amuer2011/SmartNote/actions/workflows/windows.yml)
-![版本](https://img.shields.io/badge/version-1.0.0-7965c1)
-![平台](https://img.shields.io/badge/platform-Windows%2010%20%2F%2011%20x64-0078D4)
+[![Build](https://github.com/amuer2011/SmartNote/actions/workflows/release.yml/badge.svg)](https://github.com/amuer2011/SmartNote/actions/workflows/release.yml)
+![版本](https://img.shields.io/badge/version-1.0.1-7965c1)
+![平台](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-0078D4)
 ![技术栈](https://img.shields.io/badge/stack-Go%20%2B%20Vue%203-42b883)
 ![离线模型](https://img.shields.io/badge/embedding-built--in%20%26%20offline-6554a4)
 
@@ -91,9 +91,9 @@ SmartNote 是一款面向个人长期知识积累的桌面笔记应用。笔记�
 
 ## 开始使用
 
-**已验证环境：Windows 10 / 11 x64，需要 Microsoft Edge WebView2 Runtime。**
+**支持 Windows x64、macOS Intel / Apple Silicon，以及 Linux x64 / ARM64。** 平台要求与安装命令见[平台说明](docs/platforms.md)。
 
-从 [GitHub Releases](https://github.com/amuer2011/SmartNote/releases/latest) 下载 `SmartNote-Setup-v1.0.0-windows-x64.exe` 安装包，或 `SmartNote-v1.0.0-windows-x64.exe` 免安装版。发布包包含离线模型；同页 `SHA256SUMS.txt` 可用于校验下载文件。也可以按下方步骤自行构建。
+从 [GitHub Releases](https://github.com/amuer2011/SmartNote/releases/latest) 下载 `SmartNote-Setup-v1.0.1-windows-x64.exe` 安装包，或 `SmartNote-v1.0.1-windows-x64.exe` 免安装版。macOS 提供 DMG 和 `.app` ZIP，Linux 提供 DEB、RPM、AppImage 和 TAR.GZ，两种架构分别构建。发布包包含离线模型；同页 `SHA256SUMS.txt` 可用于校验下载文件。也可以按下方步骤自行构建。
 
 安装或构建完成后：
 
@@ -130,7 +130,7 @@ SmartNote 是一款面向个人长期知识积累的桌面笔记应用。笔记�
 
 ## 源码构建
 
-### 环境
+### Windows 环境
 
 - Windows x64、PowerShell。
 - Go **1.25.4+**。
@@ -155,6 +155,16 @@ cd SmartNote
 默认程序输出到 `build/bin/SmartNote.exe`，安装包输出到 `build/bin/`。首次构建需要网络获取 npm / Go 依赖及所需构建工具，终端用户运行核心离线功能无需安装开发工具。
 
 仓库包含内置模型和 Windows CPU 运行库。[资源清单](internal/embedding/assets/manifest.json)固定来源与 SHA-256；`build/Prepare-Embedding.ps1` 校验资源，缺失或不匹配时重新准备。
+
+### macOS / Linux 构建
+
+准备 Go、Node.js 22、Python 3.10+ 及对应系统依赖后，在本机架构执行：
+
+```bash
+python3 build/unix.py
+```
+
+Linux 还需 GTK 3、WebKitGTK 4.1 开发包及打包工具，完整列表见[平台说明](docs/platforms.md)。构建时下载并校验当前平台运行库，生成的安装包已内置模型与运行库，用户使用时无需下载。
 
 ### 开发与检查
 
@@ -189,14 +199,15 @@ SmartNote/
 
 ## 项目文档
 
-- [当前版本 v1.0.0](docs/release-v1.0.0.md)：首个正式版本，包含 Windows 安装包、免安装版及自动构建发布。
+- [当前版本 v1.0.1](docs/release-v1.0.1.md)：macOS Intel / Apple Silicon、Linux x64 / ARM64 原生离线模型与多格式安装包。
+- [平台说明](docs/platforms.md)：系统依赖、各发行版安装方式与当前验证范围。
 - [Actions 与发布说明](docs/releasing.md)：持续集成、版本标签、构建产物与 Release 发布方式。
 - [功能实施状态](docs/implementation-status.md)：已落地能力和后续事项。
 - [WebDAV 与大模型配置](docs/sync-and-llm.md)：同步范围、冲突处理、供应商和模型配置。
 - [AI 知识助手指南](docs/assistant-knowledge-guide.md)：工作区上下文、工具与交互边界。
 - [验证记录](docs/validation.md)：测试方法、构建和验收范围。
 
-当前处于持续迭代阶段。Windows 安装与核心离线链路已验证；macOS / Linux 安装包、自动更新、应用退出后的系统提醒仍待完善。真实 WebDAV / 大模型服务兼容性、万篇笔记规模性能和长期稳定性还需进一步验收。Obsidian 导入覆盖常见 Markdown 与引用方式，不保证第三方插件全部兼容。
+当前处于持续迭代阶段。Windows 安装链路及 macOS / Linux 原生构建、离线模型与桌面启动由 CI 验证；自动更新和应用退出后的系统提醒仍待完善。真实 WebDAV / 大模型服务兼容性、万篇笔记规模性能和长期稳定性还需进一步验收。Obsidian 导入覆盖常见 Markdown 与引用方式，不保证第三方插件全部兼容。
 
 ## 第三方资源
 
