@@ -215,6 +215,8 @@ def main():
     env = {**os.environ, 'CGO_ENABLED': '1'}
     if system == 'darwin':
         env['MACOSX_DEPLOYMENT_TARGET'] = '13.3'
+        # Wails' native file dialogs use UTType on current macOS SDKs.
+        env['CGO_LDFLAGS'] = (env.get('CGO_LDFLAGS', '') + ' -framework UniformTypeIdentifiers').strip()
     if not args.skip_install:
         run('npm', 'ci', '--prefix', 'frontend', env=env)
     run('npm', 'run', 'build', '--prefix', 'frontend', env=env)
