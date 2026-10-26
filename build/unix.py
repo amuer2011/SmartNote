@@ -127,7 +127,7 @@ def linux(binary, work, version, arch, goarch, env):
     shutil.copytree(portable, install)
     write(payload / 'usr/bin/smartnote', '#!/bin/sh\nexec /opt/smartnote/SmartNote "$@"\n', executable=True)
     desktop = ('[Desktop Entry]\nType=Application\nName=SmartNote\nComment=Local Markdown knowledge base\n'
-               'Exec=smartnote\nIcon=smartnote\nTerminal=false\nCategories=Office;Utility;\n')
+               'Exec=smartnote\nIcon=smartnote\nTerminal=false\nCategories=Office;\n')
     write(payload / 'usr/share/applications/smartnote.desktop', desktop)
     icon = payload / 'usr/share/icons/hicolor/256x256/apps/smartnote.png'
     icon.parent.mkdir(parents=True)
@@ -155,6 +155,7 @@ def linux(binary, work, version, arch, goarch, env):
           'Name: smartnote\nVersion: ' + version + '\nRelease: 1\nSummary: Local Markdown knowledge base\n'
           'License: LicenseRef-SmartNote-and-ThirdParty\nURL: https://github.com/amuer2011/SmartNote\n'
           'BuildArch: ' + rpm_arch + '\nRequires: libgtk-3.so.0()(64bit), libwebkit2gtk-4.1.so.0()(64bit)\n'
+          'Requires: libstdc++.so.6()(64bit), libgcc_s.so.1()(64bit)\n'
           '%global debug_package %{nil}\n%global __os_install_post %{nil}\n'
           '%description\nLocal Markdown notes with offline semantic search.\n'
           '%install\nmkdir -p %{buildroot}\ncp -a "' + str(payload) + '/." %{buildroot}/\n'
@@ -182,7 +183,7 @@ def linux(binary, work, version, arch, goarch, env):
     pins = json.loads((ROOT / 'build/appimage-runtimes.json').read_text())
     app_runtime = runtime.download(pins['platforms'][goarch], ROOT / '.tmp/appimage-downloads')
     squash = work / 'application.squashfs'
-    run('mksquashfs', appdir, squash, '-noappend', '-all-root', '-no-xattrs', '-comp', 'xz', '-processors', '2')
+    run('mksquashfs', appdir, squash, '-noappend', '-all-root', '-no-xattrs', '-comp', 'zstd', '-processors', '2')
     image = OUT / (base + '.AppImage')
     with image.open('wb') as output:
         for part in (app_runtime, squash):
