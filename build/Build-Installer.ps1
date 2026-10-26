@@ -24,15 +24,47 @@ $compiler=Join-Path $compilerRoot 'makensis.exe'
 
 $compilerHash='F497E92DEB9F179F7B8F7553FCB3BD04F511BB2949E5E4A2AEE80A10F7B20431'
 
+# Hosted runners may already contain this exact NSIS build.
+if (-not (Test-Path -LiteralPath $compiler)) {
+ foreach ($installedRoot in @(${env:ProgramFiles(x86)}, $env:ProgramFiles)) {
+  if (-not $installedRoot) { continue }
+  $installedCompiler=Join-Path $installedRoot 'NSIS/makensis.exe'
+  if ((Test-Path -LiteralPath $installedCompiler) -and (Get-FileHash -LiteralPath $installedCompiler -Algorithm SHA256).Hash -eq $compilerHash) {
+   $compiler=$installedCompiler
+   break
+  }
+ }
+}
+
 if (-not(Test-Path -LiteralPath $compiler)) {
 
  $archive=Join-Path $projectRoot '.tmp\nsis-3.11.zip'
 
  New-Item -ItemType Directory -Force (Split-Path $archive -Parent) | Out-Null
 
- if (-not(Test-Path -LiteralPath $archive)) {Invoke-WebRequest -UseBasicParsing -Uri 'https://downloads.sourceforge.net/project/nsis/NSIS%203/3.11/nsis-3.11.zip' -OutFile $archive}
-
- if((Get-FileHash -LiteralPath $archive -Algorithm SHA256).Hash -ne 'C7D27F780DDB6CFFB4730138CD1591E841F4B7EDB155856901CDF5F214394FA1'){throw 'NSIS archive checksum mismatch'}
+ $archiveHash='C7D27F780DDB6CFFB4730138CD1591E841F4B7EDB155856901CDF5F214394FA1'
+ $verified=(Test-Path -LiteralPath $archive) -and (Get-FileHash -LiteralPath $archive -Algorithm SHA256).Hash -eq $archiveHash
+ if (-not $verified) {
+  $mirrors=@(
+   'https://master.dl.sourceforge.net/project/nsis/NSIS%203/3.11/nsis-3.11.zip?viasf=1',
+   'https://phoenixnap.dl.sourceforge.net/project/nsis/NSIS%203/3.11/nsis-3.11.zip',
+   'https://pilotfiber.dl.sourceforge.net/project/nsis/NSIS%203/3.11/nsis-3.11.zip',
+   'https://downloads.sourceforge.net/project/nsis/NSIS%203/3.11/nsis-3.11.zip'
+  )
+  foreach ($mirror in $mirrors) {
+   try {
+    Invoke-WebRequest -UseBasicParsing -Uri $mirror -OutFile ($archive+'.part') -TimeoutSec 45
+    if ((Get-FileHash -LiteralPath ($archive+'.part') -Algorithm SHA256).Hash -ne $archiveHash) {
+     Write-Warning 'NSIS mirror returned unexpected content; trying another mirror.'
+     continue
+    }
+    Move-Item -LiteralPath ($archive+'.part') -Destination $archive -Force
+    $verified=$true
+    break
+   } catch { Write-Warning 'NSIS mirror download failed; trying another mirror.' }
+  }
+ }
+ if (-not $verified) { throw 'No NSIS mirror provided the archive with the expected SHA-256.' }
 
  New-Item -ItemType Directory -Force (Split-Path $compilerRoot -Parent) | Out-Null
 
