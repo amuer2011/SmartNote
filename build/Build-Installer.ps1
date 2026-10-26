@@ -43,6 +43,13 @@ if (-not(Test-Path -LiteralPath $compiler)) {
  New-Item -ItemType Directory -Force (Split-Path $archive -Parent) | Out-Null
 
  $archiveHash='C7D27F780DDB6CFFB4730138CD1591E841F4B7EDB155856901CDF5F214394FA1'
+ $bundledArchive=Join-Path $projectRoot 'build/tools/nsis-3.11.zip'
+ if (Test-Path -LiteralPath $bundledArchive) {
+  if ((Get-FileHash -LiteralPath $bundledArchive -Algorithm SHA256).Hash -ne $archiveHash) {
+   throw 'Bundled NSIS archive checksum mismatch.'
+  }
+  Copy-Item -LiteralPath $bundledArchive -Destination $archive -Force
+ }
  $verified=(Test-Path -LiteralPath $archive) -and (Get-FileHash -LiteralPath $archive -Algorithm SHA256).Hash -eq $archiveHash
  if (-not $verified) {
   $mirrors=@(

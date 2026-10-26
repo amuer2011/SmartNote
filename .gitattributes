@@ -8,3 +8,4 @@ internal/embedding/assets/** -text
 *.ico binary
 *.onnx binary
 *.dll binary
+*.zip binary
