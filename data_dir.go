@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 	"runtime"
 	"strings"
+	"syscall"
 )
 
 func dataDirectoryCandidates() []string {
@@ -59,7 +60,7 @@ func selectDataDirectory(candidates []string) (string, error) {
 		for _, name := range []string{"settings.json", "index.db", "workspaces"} {
 			if _, e := os.Stat(filepath.Join(root, name)); e == nil {
 				existingData = true
-			} else if !errors.Is(e, os.ErrNotExist) && !errors.Is(e, os.ErrPermission) {
+			} else if !errors.Is(e, os.ErrNotExist) && !errors.Is(e, os.ErrPermission) && !errors.Is(e, syscall.ENOTDIR) {
 				return "", e
 			}
 		}

@@ -102,6 +102,10 @@ func TestFolderImportAutomaticArchiveMaintainsLinksAndSource(t *testing.T) {
 		t.Fatal(err)
 	}
 	source := t.TempDir()
+	source, err := filepath.EvalSymlinks(source)
+	if err != nil {
+		t.Fatal(err)
+	}
 	for name, body := range map[string]string{"入口.md": "[[子目录/数据库]]", "子目录/数据库.md": "# 数据库\n![图片](../图片.png)", "图片.png": "image"} {
 		if err := atomicWrite(filepath.Join(source, filepath.FromSlash(name)), []byte(body)); err != nil {
 			t.Fatal(err)
@@ -142,6 +146,10 @@ func TestFolderImportAutomaticArchiveMaintainsLinksAndSource(t *testing.T) {
 func TestFolderImportDirectKeepsDirectoryAndReusesRegistration(t *testing.T) {
 	s, old := fixture(t)
 	source := t.TempDir()
+	source, err := filepath.EvalSymlinks(source)
+	if err != nil {
+		t.Fatal(err)
+	}
 	for path, body := range map[string]string{"子目录/入口.md": "# 入口\n![图片](../图片.png)", "图片.png": "image", ".obsidian/config.json": "keep config"} {
 		if err := atomicWrite(filepath.Join(source, filepath.FromSlash(path)), []byte(body)); err != nil {
 			t.Fatal(err)
