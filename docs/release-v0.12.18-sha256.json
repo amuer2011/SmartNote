@@ -1,0 +1,12 @@
+[
+  {
+    "file": "build/bin/SmartNote-v0.12.18-paste-editor.exe",
+    "sha256": "E9F21DA55AC3EF6AD0E38F084B3C207593EE714EF8A7E87F82CAC60D4AD8AB6A",
+    "size": 57399808
+  },
+  {
+    "file": "build/bin/SmartNote-Setup-v0.12.18-paste-editor.exe",
+    "sha256": "C534DDC3FE68D546D9513BFC4A73546EEDD05DF6C4CA4ACD1F9A6A0AC6761E56",
+    "size": 25381478
+  }
+]

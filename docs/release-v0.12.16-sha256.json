@@ -1,0 +1,12 @@
+[
+  {
+    "file": "build/bin/SmartNote-v0.12.16-navigation-tabs.exe",
+    "sha256": "6C7FB010A689989CEAECA739B67096ADD62A70B97C0B699807AE760566C16122",
+    "size": 57364992
+  },
+  {
+    "file": "build/bin/SmartNote-Setup-v0.12.16-navigation-tabs.exe",
+    "sha256": "CE6F6FC476E527E8CF4C1F2291AEDCFD1D5856AE79C248D2794DC1D8DDBFC524",
+    "size": 25371383
+  }
+]

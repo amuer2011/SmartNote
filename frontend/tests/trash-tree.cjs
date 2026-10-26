@@ -1,0 +1,12 @@
+const assert=require('node:assert/strict'),fs=require('node:fs'),ts=require('typescript'),Module=require('node:module');
+const code=ts.transpileModule(fs.readFileSync('frontend/src/services/trash-tree.ts','utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022}}).outputText;
+const mod=new Module('trash-tree');mod._compile(code,'trash-tree.js');const {trashRows,trashTargets}=mod.exports;
+const make=(path,directory=false,source='notes')=>({source,path,name:path.split('/').pop(),directory,size:10,modified:'2026-10-19'});
+const entries=[make('a',true),make('a/Inbox',true),make('a/Inbox/test.md'),make('b',true),make('b/Inbox',true),make('b/Inbox/test.md'),make('c/root.md'),make('d/其他',true,'folders'),make('d/其他/资料.txt',false,'folders')];
+const roots=trashRows(entries,'notes','');assert.deepEqual(roots.map(r=>r.name),['Inbox','root.md']);
+const files=trashRows(entries,'notes','Inbox');assert.equal(files.length,2);assert.notEqual(files[0].id,files[1].id);
+assert.deepEqual(trashTargets(entries,'notes',roots[0]).map(e=>e.path),['a/Inbox','b/Inbox']);
+assert.equal(trashTargets(entries,'notes',files[0]).length,1);assert.equal(trashTargets(entries,'notes',files[0])[0].path,files[0].entry.path);
+assert.deepEqual(trashRows(entries,'folders','').map(r=>r.name),['其他']);
+assert.deepEqual(trashRows([make('only',true)],'notes',''),[]);
+console.log('PASS hidden batches, merged original directories, duplicate files kept separate, exact deletion targets');

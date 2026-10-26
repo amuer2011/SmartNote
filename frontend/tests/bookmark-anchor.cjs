@@ -1,0 +1,12 @@
+const assert=require('node:assert/strict');
+const fs=require('node:fs'),path=require('node:path'),ts=require('typescript');
+const moduleValue={exports:{}};
+const code=ts.transpileModule(fs.readFileSync(path.join(__dirname,'../src/services/bookmarks.ts'),'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS}}).outputText;
+new Function('exports',code)(moduleValue.exports);
+const locate=moduleValue.exports.bookmarkLine;
+const anchor={line:1,text:'收藏位置',before:'前文',after:'后文'};
+assert.deepEqual(locate('新增一行\n前文\n收藏位置\n后文',anchor),{line:2,found:true});
+assert.deepEqual(locate('其他\n收藏位置\n无关\n前文\n收藏位置\n后文',anchor),{line:4,found:true});
+assert.deepEqual(locate('前文\r\n收藏位置\r\n后文',anchor),{line:1,found:true});
+assert.deepEqual(locate('原文删除',anchor),{line:0,found:false});
+console.log('PASS: bookmark relocation after insertion, repeated-text context disambiguation, CRLF, deleted-anchor fallback');

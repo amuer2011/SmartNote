@@ -1,0 +1,12 @@
+[
+  {
+    "file": "build/bin/SmartNote-v0.12.14-note-tabs.exe",
+    "size": 57352192,
+    "sha256": "D5AF70CF9DAD720894320CE0D32591763EE0D53D6603B5100F07648DE3E0E2A6"
+  },
+  {
+    "file": "build/bin/SmartNote-Setup-v0.12.14-note-tabs.exe",
+    "size": 25375283,
+    "sha256": "8C30E57F09A3EACBB2AD3738AC9C9D73E88097F92A9614D0BC84130DCB3CAB02"
+  }
+]

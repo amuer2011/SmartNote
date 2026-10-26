@@ -1,0 +1,12 @@
+[
+  {
+    "file": "build/bin/SmartNote-v0.12.15-model-menu.exe",
+    "sha256": "5CC18184FEEF520603D42B4ABDE54008D05E4008FC2EF24C19DD081F4ABD3675",
+    "size": 57365504
+  },
+  {
+    "file": "build/bin/SmartNote-Setup-v0.12.15-model-menu.exe",
+    "sha256": "65C3C66E916E2B6991E5E0CCAB058BFE07100AE5B2A157F5C8B2F790FD378E6C",
+    "size": 25379177
+  }
+]

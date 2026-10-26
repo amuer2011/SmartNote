@@ -1,0 +1,16 @@
+<!doctype html><html><head><meta charset="UTF-8"></head><body><div id="app"></div><script type="module">
+import {createApp,h,ref} from 'vue'
+import Preview from '../src/components/MarkdownPreview.vue'
+import Assistant from '../src/components/AIAssistant.vue'
+import Toolbar from '../src/components/MarkdownToolbar.vue'
+import Editor from '../src/components/MarkdownEditor.vue'
+import '../src/style.css'
+import '../src/admonitions.css'
+const content=ref('---\ntitle: 示例\n---\n\n> [!warning]- **折叠提示**\n>\n> ## 隐藏标题\n> 查找目标与 [[本地笔记]]\n\n```ad-tip\ntitle: 小技巧\ncollapse: open\n- 列表内容\n\n[安全链接](https://example.com)\n```\n\n```js\n> [!note] 保留代码\n```\n\n> [!note] <img src=x onerror="window.attacked=true">'),visible=ref(true),preview=ref(),editor=ref()
+window.fixture={content,visible,preview}
+createApp({setup(){return()=>h('main',{style:'display:flex;height:900px;gap:12px;padding:16px'},[
+ h('section',{style:'width:650px;min-width:0;display:flex;flex-direction:column'},[
+  h(Toolbar,{onCommand:id=>editor.value.command(id)}),h('div',{style:'height:200px;flex-shrink:0;overflow:hidden'},[h(Editor,{ref:editor,modelValue:content.value,'onUpdate:modelValue':value=>content.value=value,notePath:'test.md',workspaceId:'w'})]),
+  h('div',{class:'preview-pane',style:'overflow:auto;flex:1;position:relative;min-height:0'},[h(Preview,{ref:preview,content:content.value,onLink:target=>window.clickedLink=target})])]),
+ h('section',{style:'width:440px;height:850px'},[h(Assistant,{visible:visible.value,panelHidden:!visible.value,workspaceId:'w',note:null,revision:0,selection:'',prepareContext:async()=>({noteId:'',hash:''}),applyEdit:async()=>{},onClose:()=>{visible.value=false}})])])}}).mount('#app')
+</script></body></html>

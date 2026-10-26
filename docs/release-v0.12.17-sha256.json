@@ -1,0 +1,12 @@
+[
+  {
+    "file": "build/bin/SmartNote-v0.12.17-copy-clipboard.exe",
+    "sha256": "4D702C69CAADD3FED139C4F916D0328808BEDDD5ED0B58BA1FFBD69903FB3CBC",
+    "size": 57387008
+  },
+  {
+    "file": "build/bin/SmartNote-Setup-v0.12.17-copy-clipboard.exe",
+    "sha256": "E161CBE580F393C7905096AF4138CF0283C4C89C04517144BA0669E14083375E",
+    "size": 25382209
+  }
+]

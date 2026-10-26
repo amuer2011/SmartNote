@@ -1,0 +1,10 @@
+[
+  {"provider":"openai","models":["deepseek-flash","deepseek-v4-flash","deepseek-v4.1-flash","deepseek-v4.1-flash-fast","deepseek-v4-pro","deepseek-v4.1-pro"],"namespaced":true,"wire":"deepseek","efforts":["none","low","high","max"]},
+  {"provider":"openai","models":["gpt-5"],"dated":true,"efforts":["minimal","low","medium","high"]},
+  {"provider":"openai","models":["gpt-5.1"],"dated":true,"efforts":["none","low","medium","high"]},
+  {"provider":"openai","models":["gpt-5.2","gpt-5.4","gpt-5.4-mini","gpt-5.4-nano","gpt-5.5"],"dated":true,"efforts":["none","low","medium","high","xhigh"]},
+  {"provider":"openai","models":["gpt-5.6","gpt-5.6-sol","gpt-6-sol","gpt-6-luna"],"dated":true,"efforts":["none","low","medium","high","xhigh","max"]},
+  {"provider":"openai","models":["gpt-6-astra","gpt-6.1-sol"],"dated":true,"efforts":["low","medium","high","xhigh","max"]},
+  {"provider":"openai","models":["gpt-4.1","gpt-4.1-mini","gpt-4.1-nano","gpt-4o","gpt-4o-mini","gpt-3.5-turbo"],"dated":true,"efforts":[]},
+  {"provider":"ollama","models":["gpt-oss"],"tags":true,"efforts":["low","medium","high"]}
+]

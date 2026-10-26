@@ -1,0 +1,12 @@
+<!doctype html><html><head><meta charset="UTF-8"></head><body><div id="app"></div><script type="module">
+import {createApp,h,ref} from 'vue'
+import Editor from '../src/components/MarkdownEditor.vue'
+import Preview from '../src/components/MarkdownPreview.vue'
+import '../src/style.css'
+import '../src/admonitions.css'
+const content=ref(''),editor=ref()
+window.fixture={content,editor}
+createApp({setup(){return()=>h('main',{style:'display:flex;height:100vh;padding:30px;gap:12px'},[
+ h('section',{class:'source-pane',style:'width:55%;height:100%;min-width:0;position:relative'},[h(Editor,{ref:editor,modelValue:content.value,'onUpdate:modelValue':value=>content.value=value,notePath:'提示块.md',workspaceId:'w',noteTitle:'提示块'})]),
+ h('section',{class:'preview-pane',style:'width:45%;height:100%;position:relative'},[h(Preview,{content:content.value})])])}}).mount('#app')
+</script></body></html>

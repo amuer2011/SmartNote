@@ -1,0 +1,38 @@
+const assert=require('node:assert/strict'),{chromium}=require('playwright'),path=require('node:path');
+(async()=>{const browser=await chromium.launch({executablePath:'C:/Program Files/Google/Chrome/Application/chrome.exe',headless:true});try{
+ const page=await browser.newPage({viewport:{width:1600,height:1050}}),errors=[];page.on('pageerror',e=>errors.push(String(e)));
+ await page.addInitScript(()=>{
+  const provider={id:'p',name:'隔离测试服务',provider:'openai',endpoint:'https://example.com/v1',model:'gpt-4.1-mini',models:['gpt-4.1-mini'],selectedModels:[],reasoningEffort:'',hasSecret:true};
+  window.canceled=[];window.sent=[];
+  window.go={main:{App:{GetLLMProviders:async()=>({enabled:true,defaultId:'p',revision:'1',providers:[provider]}),ListAssistantConversations:async()=>[],SaveAssistantConversation:async(w,c)=>({...c,revision:crypto.randomUUID(),title:'测试会话'}),CancelLLM:async id=>window.canceled.push(id),ChatLLM:async input=>{window.sent.push(input);await new Promise(r=>setTimeout(r,900));return {text:'> [!success] 已完成\n> **回复正文**',sources:[],proposals:[],steps:[]}}}}};
+ });
+ const url=(process.env.SMARTNOTE_TEST_URL||'http://127.0.0.1:4175')+'/tests/admonition-chat.html';await page.goto(url);
+ const preview=page.locator('.markdown-preview');await preview.locator('details.admonition-warning').waitFor();
+ assert.equal(await preview.locator('details.admonition-warning').evaluate(el=>el.open),false);
+ await preview.locator('details.admonition-warning>summary').click();assert.equal(await preview.locator('details.admonition-warning').evaluate(el=>el.open),true);
+ assert.equal(await preview.locator('h2[data-source-line="6"]').innerText(),'隐藏标题');
+ await preview.locator('a[href^="smartnote-note:"]').click();assert.match(await page.evaluate(()=>window.clickedLink),/本地笔记|%E6/);
+ await preview.locator('details.admonition-warning>summary').click();
+ assert.equal(await page.evaluate(()=>window.fixture.preview.value.findMatches('查找目标')),1);
+ assert.equal(await preview.locator('details.admonition-warning').evaluate(el=>el.open),true);
+ assert.equal(await preview.locator('img').count(),0);assert.equal(await page.evaluate(()=>!!window.attacked),false);
+ assert.equal(await preview.locator('pre code').innerText(),'> [!note] 保留代码\n');
+ const ai=page.getByLabel('AI 助手',{exact:true}),input=ai.getByLabel('发送给 AI 的消息',{exact:true});await input.waitFor();await page.waitForFunction(()=>!document.querySelector('.ai-composer textarea').disabled);
+ await input.fill('切换窗口保留的草稿');await input.evaluate(el=>window.originalInput=el);
+ const inputBefore=(await input.boundingBox()).height,handle=ai.getByRole('separator',{name:'调整 AI 输入框高度',exact:true}),hb=await handle.boundingBox();
+ await page.mouse.move(hb.x+hb.width/2,hb.y+hb.height/2);await page.mouse.down();await page.mouse.move(hb.x+hb.width/2,hb.y-110,{steps:8});await page.mouse.up();assert((await input.boundingBox()).height>inputBefore+90);
+ await ai.getByRole('button',{name:'浮动 AI 聊天',exact:true}).click();const win=page.getByRole('dialog',{name:'AI 聊天',exact:true});await win.waitFor();assert.equal(await input.inputValue(),'切换窗口保留的草稿');assert(await input.evaluate(el=>el===window.originalInput));
+ const before=await win.boundingBox(),grip=win.getByRole('separator',{name:'调整AI 聊天窗口大小',exact:true}),gb=await grip.boundingBox();
+ await page.mouse.move(gb.x+gb.width/2,gb.y+gb.height/2);await page.mouse.down();await page.mouse.move(gb.x+100,gb.y+90,{steps:10});await page.mouse.up();let size=await win.boundingBox();assert(size.width>before.width+80&&size.height>before.height+70);
+ const left=await win.locator('.resize-w').boundingBox();await page.mouse.move(left.x+2,left.y+50);await page.mouse.down();await page.mouse.move(left.x-65,left.y+50,{steps:8});await page.mouse.up();assert((await win.boundingBox()).width>size.width+50);
+ const header=await win.locator('.floating-window-header').boundingBox(),old=await win.boundingBox();await page.mouse.move(header.x+90,header.y+20);await page.mouse.down();await page.mouse.move(header.x+40,header.y+45,{steps:8});await page.mouse.up();assert((await win.boundingBox()).x<old.x-35);
+ await input.fill('发送中移动窗口');await ai.getByRole('button',{name:'发送',exact:true}).click();await ai.getByRole('button',{name:'停止',exact:true}).waitFor();await ai.getByRole('button',{name:'停靠 AI 聊天',exact:true}).click();await win.waitFor({state:'hidden'});await ai.locator('.admonition-success').waitFor();assert.equal(await page.evaluate(()=>window.canceled.length),0);assert(await input.evaluate(el=>el===window.originalInput));
+ await ai.getByRole('button',{name:'浮动 AI 聊天',exact:true}).click();await win.waitFor();await page.waitForTimeout(300);const remembered=await win.boundingBox();
+ await page.screenshot({path:path.resolve(__dirname,'../../docs/preview-admonition-chat-v0.12.6.png'),fullPage:true});
+ await page.evaluate(()=>{window.fixture.visible.value=false});await win.waitFor({state:'hidden'});await page.evaluate(()=>{window.fixture.visible.value=true});await win.waitFor();assert.equal((await win.boundingBox()).width,remembered.width);
+ await page.reload();await page.getByRole('button',{name:'浮动 AI 聊天',exact:true}).click();await win.waitFor();const restored=await win.boundingBox();assert.equal(restored.width,remembered.width);assert.equal(restored.height,remembered.height);assert.equal(restored.x,remembered.x);
+ assert((await input.boundingBox()).height>150);
+ await page.setViewportSize({width:950,height:680});await page.waitForTimeout(100);const small=await win.boundingBox();assert(small.x>=0&&small.y>=0&&small.x+small.width<=951&&small.y+small.height<=681);
+ await page.getByRole('button',{name:'关闭AI 聊天',exact:true}).click();await win.waitFor({state:'hidden'});await page.getByRole('button',{name:'插入提示块',exact:true}).click();assert((await page.evaluate(()=>window.fixture.content.value)).includes('> [!note] 提示'));
+ assert.deepEqual(errors,[]);console.log('PASS preview folding, local links, source lines, hidden-text search, safe rendering; AI edge/corner resize, dragging, input height, live request/draft preservation, hide/restore, persistence and viewport fit');
+}finally{await browser.close()}})().catch(e=>{console.error(e);process.exit(1)});

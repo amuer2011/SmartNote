@@ -1,0 +1,10 @@
+* text=auto
+
+# Embedded resources must retain the exact bytes recorded in manifest.json.
+internal/embedding/assets/** -text
+
+*.png binary
+*.jpg binary
+*.ico binary
+*.onnx binary
+*.dll binary

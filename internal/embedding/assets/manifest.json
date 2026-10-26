@@ -1,0 +1,133 @@
+{
+  "model": "BAAI/bge-small-zh-v1.5",
+  "revision": "75c43b069aac4d136ba6bc1122f995fedcfd2781",
+  "runtime": "ONNX Runtime CPU 1.22.0 / Windows x64",
+  "files": {
+    "config.json": {
+      "sha256": "d4193ead3a810fd694fa8a31d7fc72fbaebc0668b603e398734bf2f6538ff42f",
+      "size": 716,
+      "source": {
+        "url": "https://huggingface.co/Xenova/bge-small-zh-v1.5/resolve/75c43b069aac4d136ba6bc1122f995fedcfd2781/config.json"
+      }
+    },
+    "MODEL-LICENSE": {
+      "sha256": "587a673933425dbc36ec61268d3b954051b2d3ef3c9b322ede357976055ffdd5",
+      "size": 1065,
+      "source": {
+        "url": "https://raw.githubusercontent.com/FlagOpen/FlagEmbedding/fd1a2bdf69488ffebe0327999d4400d8c8058a0b/LICENSE"
+      }
+    },
+    "MODEL-README.md": {
+      "sha256": "cb22054df1a98f7ee9d5b281d023e67c27cc316e1733baf03fc994d95c3048ab",
+      "size": 1057,
+      "source": {
+        "url": "https://huggingface.co/Xenova/bge-small-zh-v1.5/resolve/75c43b069aac4d136ba6bc1122f995fedcfd2781/README.md"
+      }
+    },
+    "model.onnx": {
+      "sha256": "15b717c382bcb518ba457b93ea6850ede7f4f1cd8937454aa06972366cd19bcc",
+      "size": 24010842,
+      "source": {
+        "url": "https://huggingface.co/Xenova/bge-small-zh-v1.5/resolve/75c43b069aac4d136ba6bc1122f995fedcfd2781/onnx/model_quantized.onnx"
+      }
+    },
+    "msvcp140.dll": {
+      "sha256": "6fdc2c6fc1362c317ed65ae331dda329d4d03826feb8d79d635eaf8ba49764bc",
+      "size": 563232,
+      "source": {
+        "url": "https://download.microsoft.com/download/4/7/c/47c6134b-d61f-4024-83bd-b9c9ea951c25/Microsoft.VCLibs.x64.14.00.Desktop.appx",
+        "archiveSha256": "b56a9101f706f9d95f815f5b7fa6efbac972e86573d378b96a07cff5540c5961",
+        "entry": "msvcp140.dll"
+      }
+    },
+    "msvcp140_1.dll": {
+      "sha256": "6284349a2262b2329aa75aa8559980f9b2775dc5ec3a9e9ecdf55648ac7f625a",
+      "size": 25536,
+      "source": {
+        "url": "https://download.microsoft.com/download/4/7/c/47c6134b-d61f-4024-83bd-b9c9ea951c25/Microsoft.VCLibs.x64.14.00.Desktop.appx",
+        "archiveSha256": "b56a9101f706f9d95f815f5b7fa6efbac972e86573d378b96a07cff5540c5961",
+        "entry": "msvcp140_1.dll"
+      }
+    },
+    "onnxruntime.dll": {
+      "sha256": "579b636403983254346a5c1d80bd28f1519cd1e284cd204f8d4ff41f8d711559",
+      "size": 12418080,
+      "source": {
+        "url": "https://github.com/microsoft/onnxruntime/releases/download/v1.22.0/onnxruntime-win-x64-1.22.0.zip",
+        "archiveSha256": "174c616efc0271194488642a72f1a514e01487da4dfe84c49296d66e40ebe0da",
+        "entry": "onnxruntime-win-x64-1.22.0/lib/onnxruntime.dll"
+      }
+    },
+    "ORT-LICENSE": {
+      "sha256": "c250d6278f0b47a6439fb7592b08b58a55eb9f535aa49a1db63211c3f982b674",
+      "size": 1094,
+      "source": {
+        "url": "https://github.com/microsoft/onnxruntime/releases/download/v1.22.0/onnxruntime-win-x64-1.22.0.zip",
+        "archiveSha256": "174c616efc0271194488642a72f1a514e01487da4dfe84c49296d66e40ebe0da",
+        "entry": "onnxruntime-win-x64-1.22.0/LICENSE"
+      }
+    },
+    "ORT-ThirdPartyNotices.txt": {
+      "sha256": "e00f828e0a33de591a355ae6606d2625f5758da7d2c844db7821c9dd3e3647b6",
+      "size": 333022,
+      "source": {
+        "url": "https://github.com/microsoft/onnxruntime/releases/download/v1.22.0/onnxruntime-win-x64-1.22.0.zip",
+        "archiveSha256": "174c616efc0271194488642a72f1a514e01487da4dfe84c49296d66e40ebe0da",
+        "entry": "onnxruntime-win-x64-1.22.0/ThirdPartyNotices.txt"
+      }
+    },
+    "tokenizer.json": {
+      "sha256": "48cea5d44424912a6fd1ea647bf4fe50b55ab8b1e5879c3275f80e339e8fae26",
+      "size": 439125,
+      "source": {
+        "url": "https://huggingface.co/Xenova/bge-small-zh-v1.5/resolve/75c43b069aac4d136ba6bc1122f995fedcfd2781/tokenizer.json"
+      }
+    },
+    "tokenizer_config.json": {
+      "sha256": "e6f3b96db926a37d4039995fbf5ad17de158dfb8f6343d607e4dbaad18d75f5a",
+      "size": 367,
+      "source": {
+        "url": "https://huggingface.co/Xenova/bge-small-zh-v1.5/resolve/75c43b069aac4d136ba6bc1122f995fedcfd2781/tokenizer_config.json"
+      }
+    },
+    "VC-LICENSE.html": {
+      "sha256": "aaac9a66f3c0f4bf4f79247d18093fccbe8fd762244cbc59de065d28cf78eb91",
+      "size": 234414,
+      "source": {
+        "url": "https://visualstudio.microsoft.com/license-terms/vs2022-cruntime/"
+      }
+    },
+    "vcruntime140.dll": {
+      "sha256": "d5a99b38807c3df803876ce5f1e71dc43cd7ac2c882582387e550941bc99cd00",
+      "size": 109088,
+      "source": {
+        "url": "https://download.microsoft.com/download/4/7/c/47c6134b-d61f-4024-83bd-b9c9ea951c25/Microsoft.VCLibs.x64.14.00.Desktop.appx",
+        "archiveSha256": "b56a9101f706f9d95f815f5b7fa6efbac972e86573d378b96a07cff5540c5961",
+        "entry": "vcruntime140.dll"
+      }
+    },
+    "vcruntime140_1.dll": {
+      "sha256": "68f948ea61695f85ff24d249077e312abb23267b3adc43679d35d781e9aa0244",
+      "size": 39360,
+      "source": {
+        "url": "https://download.microsoft.com/download/4/7/c/47c6134b-d61f-4024-83bd-b9c9ea951c25/Microsoft.VCLibs.x64.14.00.Desktop.appx",
+        "archiveSha256": "b56a9101f706f9d95f815f5b7fa6efbac972e86573d378b96a07cff5540c5961",
+        "entry": "vcruntime140_1.dll"
+      }
+    },
+    "vocab.txt": {
+      "sha256": "45bbac6b341c319adc98a532532882e91a9cefc0329aa57bac9ae761c27b291c",
+      "size": 109540,
+      "source": {
+        "url": "https://huggingface.co/Xenova/bge-small-zh-v1.5/resolve/75c43b069aac4d136ba6bc1122f995fedcfd2781/vocab.txt"
+      }
+    },
+    "GO-ORT-LICENSE": {
+      "sha256": "b7177fa196f86e5102a5d2702c1b28ea62eb02fd2d633a37f2dbd6ffc0ba8b4f",
+      "size": 1060,
+      "source": {
+        "url": "https://raw.githubusercontent.com/yalue/onnxruntime_go/v1.22.0/LICENSE"
+      }
+    }
+  }
+}

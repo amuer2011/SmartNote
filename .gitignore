@@ -1,0 +1,29 @@
+frontend/node_modules/
+frontend/dist/
+frontend/tsconfig.tsbuildinfo
+build/bin/
+*.log
+.idea/
+.vscode/
+.tmp/
+frontend/wailsjs/
+
+# Generated Windows resources and local build outputs
+rsrc_*.syso
+coverage.out
+frontend/playwright-report/
+frontend/test-results/
+
+# Machine-local configuration and application data
+.env
+.env.*
+!.env.example
+SmartNoteData/
+*.db
+*.db-shm
+*.db-wal
+
+# OS metadata
+.DS_Store
+Thumbs.db
+Desktop.ini

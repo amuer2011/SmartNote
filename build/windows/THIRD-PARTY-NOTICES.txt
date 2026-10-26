@@ -1,0 +1,23 @@
+SmartNote v0.9.1 — Embedded offline model resources
+
+Model: BAAI/bge-small-zh-v1.5 (MIT, FlagEmbedding)
+ONNX conversion/quantization: Xenova/bge-small-zh-v1.5
+Pinned model revision: 75c43b069aac4d136ba6bc1122f995fedcfd2781
+Model weights: model_quantized.onnx, INT8, 512 dimensions.
+Tokenizer: original case-sensitive BERT WordPiece vocabulary and configuration.
+Model license: licenses/MODEL-LICENSE
+
+Inference: Microsoft ONNX Runtime CPU 1.22.0 for Windows x64 (MIT)
+License and dependency notices: licenses/ORT-LICENSE, licenses/ORT-ThirdPartyNotices.txt
+Go bindings: github.com/yalue/onnxruntime_go v1.22.0 (MIT)
+License: licenses/GO-ORT-LICENSE
+
+Microsoft Visual C++ runtime DLLs are redistributed unmodified from the official
+Microsoft.VCLibs.x64.14.00.Desktop.appx package. Terms: licenses/VC-LICENSE.html
+Source: https://download.microsoft.com/download/4/7/c/47c6134b-d61f-4024-83bd-b9c9ea951c25/Microsoft.VCLibs.x64.14.00.Desktop.appx
+
+Installer: NSIS 3.11. See NSIS-LICENSE.txt.
+
+Exact resource SHA-256 checksums, sizes and download sources are maintained in
+internal/embedding/assets/manifest.json in the source distribution.
+The program does not download model resources or send note content over a network.

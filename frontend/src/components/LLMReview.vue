@@ -1,0 +1,27 @@
+<script setup lang="ts">
+import {ref,watch,computed,onBeforeUnmount} from 'vue'
+import {api,type LLMInput,type LLMConfig,type LLMResult,type LLMSource} from '../services/api'
+import FloatingWindow from './FloatingWindow.vue'
+import {diffLines} from '../services/llm-diff'
+const props=defineProps<{show:boolean;input:LLMInput|null}>(),emit=defineEmits<{close:[];apply:[result:LLMResult];source:[source:LLMSource];settings:[]}>()
+const config=ref<LLMConfig>(),result=ref<LLMResult>(),busy=ref(false),error=ref(''),diff=ref(true),copied=ref(false)
+let sequence=0,disposed=false,request=''
+const title=computed(()=>props.input?.action==='summary'?'检索引用摘要':props.input?.action==='structure'?'Markdown 结构整理':'文字润色')
+const reasoning=computed(()=>({none:'不思考',minimal:'极低',low:'低',medium:'中',high:'高',xhigh:'极高',max:'最高',off:'关闭思考',on:'开启思考'}[config.value?.reasoningEffort||'']||'模型默认'))
+const changes=computed(()=>result.value?diffLines(result.value.original,result.value.text):[])
+function cancel(){sequence++;if(request){void api.CancelLLM(request);request=''}busy.value=false}
+function close(){cancel();emit('close')}
+watch(()=>[props.show,props.input] as const,async([show])=>{cancel();result.value=undefined;config.value=undefined;error.value='';copied.value=false;if(!show||!props.input)return;const token=sequence;try{const c=await api.GetLLMConfig();if(!disposed&&token===sequence)config.value=c}catch(e){if(token===sequence)error.value=String(e)}},{immediate:true})
+async function generate(){if(!props.input||busy.value||!config.value?.enabled)return;const token=++sequence;busy.value=true;error.value='';copied.value=false;result.value=undefined;request=props.input.requestId;try{const out=await api.GenerateLLM({...props.input});if(!disposed&&token===sequence)result.value=out}catch(e){if(token===sequence)error.value=String(e)}finally{if(token===sequence){busy.value=false;request=''}}}
+async function copy(){if(!result.value)return;try{await navigator.clipboard.writeText(result.value.text);copied.value=true}catch(e){error.value=String(e)}}
+onBeforeUnmount(()=>{disposed=true;cancel()})
+</script>
+<template><FloatingWindow :show="show" :title="title" :initial-width="950" :initial-height="720" @close="close" @minimize="close"><section class="llm-review" aria-label="大模型结果预览">
+<p v-if="config" class="field-help">服务：{{config.endpoint}} · {{config.model}} · 思考强度：{{reasoning}}。{{input?.action==='summary'?`将发送你的问题和 ${input.sources?.length||0} 条本地命中片段，每条最多 1800 字。`:`将发送所选文本，共 ${Array.from(input?.text||'').length} 字。`}}只有点击下方按钮才会发送。</p>
+<p v-if="config&&!config.enabled" class="field-help">可选大模型尚未启用。<button class="text-button" @click="emit('settings')">前往大模型设置</button></p>
+<div class="actions"><button class="primary-button" :disabled="!config?.enabled||busy" @click="generate">{{busy?'正在生成…':result?'重新生成':'发送并生成预览'}}</button><button v-if="busy" class="secondary-button" @click="cancel">取消请求</button><button v-if="result" class="secondary-button" @click="copy">{{copied?'已复制':'复制结果'}}</button><button v-if="result&&input?.action!=='summary'" class="primary-button" @click="emit('apply',result)">确认替换所选文本</button></div>
+<p v-if="error" class="bookmark-error" role="alert">{{error}}</p>
+<template v-if="result"><template v-if="input?.action!=='summary'"><label class="diff-toggle"><input v-model="diff" type="checkbox"/>高亮显示改动（红色删除，绿色新增）</label><pre v-if="diff" class="diff-result" aria-label="原文差异"><div v-for="(line,index) in changes" :key="index" :class="line.kind"><span aria-hidden="true">{{line.kind==='added'?'+ ':line.kind==='removed'?'- ':'  '}}</span>{{line.text||' '}}</div></pre><div v-else class="compare"><section><h3>原文</h3><pre>{{result.original}}</pre></section><section><h3>生成结果</h3><pre>{{result.text}}</pre></section></div><p class="field-help">仅替换发起请求时选择的内容。若笔记已改变，将保留你的最新编辑并拒绝写回。</p></template><template v-else><pre class="summary-result">{{result.text}}</pre><h3>来源笔记</h3><button v-for="(source,index) in result.sources" :key="source.noteId" class="source-link" @click="emit('source',source)">[{{index+1}}] {{source.title}} · 第 {{source.line+1}} 行</button><p class="field-help">摘要由模型生成，请结合来源核对。只复制结果，不自动写入笔记。</p></template></template>
+<pre v-else-if="input?.text" class="original-text" aria-label="将发送的选中文本">{{input.text}}</pre><div v-else-if="input?.action==='summary'"><p>问题：{{input.query}}</p><ol><li v-for="source in input.sources" :key="source.noteId">{{source.title}} · 第 {{source.line+1}} 行附近</li></ol></div>
+</section></FloatingWindow></template>
+<style scoped>.llm-review{padding:8px 24px 24px;width:100%;min-width:0;overflow:auto}.actions{display:flex;gap:9px;flex-wrap:wrap;margin:16px 0}.diff-toggle{display:flex;gap:7px;font-size:.85rem;margin:16px 0}pre{font-family:var(--note-font-family,monospace);font-size:var(--note-font-size,14px);white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.8}.diff-result,.summary-result,.original-text{border:1px solid var(--line);border-radius:7px;overflow:auto;max-height:430px;padding:12px}.diff-result>div{min-height:1.8em}.added{background:#4aab5930;color:var(--text)}.removed{background:#d44b5030;color:var(--text);text-decoration:line-through}.compare{display:grid;grid-template-columns:1fr 1fr;gap:16px}.compare section{min-width:0}.compare pre{border:1px solid var(--line);padding:12px;border-radius:6px}.source-link{display:block;border:0;background:transparent;color:var(--accent);text-align:left;padding:6px 0;cursor:pointer}button:disabled{opacity:.5}input{accent-color:var(--accent)}</style>
